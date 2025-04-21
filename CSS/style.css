@@ -1,0 +1,47 @@
+@charset "UTF-8";
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #a8d8a0; /* Цвет травы */
+  font-family: Arial, sans-serif;
+}
+
+#game-container {
+  width: 1400px;
+  height: 1400px;
+  position: relative;
+}
+
+#rabbit {
+  width: 49px; /* Ширина одного кадра */
+  height: 60px; /* Высота одного кадра */
+  background-size: 420px 60px; /* Общая ширина спрайта (60px * 7 кадров) */
+  animation: runRabbit 0.5s steps(7) infinite;
+  position: absolute;
+  background-image: url("/SRC/sheet.svg");
+  background-repeat: no-repeat;
+  image-rendering: pixelated; /* Для пиксель-арта */
+  cursor: pointer;
+}
+
+#scoreDisplay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+/* Анимация бега */
+@keyframes runRabbit {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -364px 0;
+  } /* 60px * 7 кадров */
+}
