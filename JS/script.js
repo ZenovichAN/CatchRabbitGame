@@ -6,34 +6,60 @@ let rabbitX = 0;
 let rabbitY = 0;
 let isMoving = false;
 let moveTimeout = null;
+let gameRect = null;
 
 // Инициализация
 function init() {
+    console.log('Initializing game...');
+    
+    // Получаем актуальные размеры игровой области
+    updateGameRect();
+    
     // Устанавливаем начальную позицию в центре
-    const gameRect = gameArea.getBoundingClientRect();
     rabbitX = gameRect.width / 2;
     rabbitY = gameRect.height / 2;
     
     updateRabbitPosition();
     animateRabbit();
     moveRabbit();
+    
+    // Добавляем обработчики событий
     rabbit.addEventListener('click', catchRabbit);
     rabbit.addEventListener('touchstart', catchRabbit, { passive: false });
     
-    // Обработка изменения размера окна
+    // Обработка изменения размера и ориентации
     window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    
+    console.log('Game initialized successfully');
+}
+
+// Обновление размеров игровой области
+function updateGameRect() {
+    gameRect = gameArea.getBoundingClientRect();
+    console.log('Game area:', gameRect.width, 'x', gameRect.height);
+}
+
+// Обработка изменения ориентации
+function handleOrientationChange() {
+    console.log('Orientation changed');
+    // Даем время на перерисовку
+    setTimeout(() => {
+        handleResize();
+    }, 100);
 }
 
 // Обработка изменения размера
 function handleResize() {
+    console.log('Window resized');
     if (moveTimeout) clearTimeout(moveTimeout);
     
-    const gameRect = gameArea.getBoundingClientRect();
+    updateGameRect();
+    
+    // Ограничиваем позицию кролика новыми границами
     const rabbitWidth = rabbit.offsetWidth;
     const rabbitHeight = rabbit.offsetHeight;
     
-    // Ограничиваем позицию кролика новыми границами
     const maxX = gameRect.width - rabbitWidth / 2;
     const maxY = gameRect.height - rabbitHeight / 2;
     const minX = rabbitWidth / 2;
@@ -44,13 +70,13 @@ function handleResize() {
     
     updateRabbitPosition();
     
-    // Возобновляем движение после изменения размера
+    // Возобновляем движение
     if (!isMoving) {
         moveRabbit();
     }
 }
 
-// Обновление позиции
+// Обновление позиции кролика
 function updateRabbitPosition() {
     rabbit.style.left = `${rabbitX}px`;
     rabbit.style.top = `${rabbitY}px`;
@@ -61,23 +87,23 @@ function animateRabbit() {
     rabbit.style.animation = 'runRabbit 0.7s steps(7) infinite';
 }
 
-// Прыжок кролика - всегда в пределах видимой области
+// Прыжок кролика
 function moveRabbit() {
     if (isMoving) return;
     
     isMoving = true;
-    const gameRect = gameArea.getBoundingClientRect();
+    
     const rabbitWidth = rabbit.offsetWidth;
     const rabbitHeight = rabbit.offsetHeight;
     
-    // Определяем безопасную зону (80% от видимой области)
-    const safeZonePadding = 0.1; // 10% отступ от краев
+    // Безопасная зона - 85% от видимой области
+    const safeZonePadding = 0.075;
     const minX = rabbitWidth / 2 + gameRect.width * safeZonePadding;
     const maxX = gameRect.width - rabbitWidth / 2 - gameRect.width * safeZonePadding;
     const minY = rabbitHeight / 2 + gameRect.height * safeZonePadding;
     const maxY = gameRect.height - rabbitHeight / 2 - gameRect.height * safeZonePadding;
     
-    // Генерируем новую позицию в безопасной зоне
+    // Генерируем новую позицию
     const newX = Math.random() * (maxX - minX) + minX;
     const newY = Math.random() * (maxY - minY) + minY;
     
@@ -86,8 +112,8 @@ function moveRabbit() {
     
     updateRabbitPosition();
     
-    // Случайный интервал прыжка: 0.8-1.5 секунды (быстрее для лучшего геймплея)
-    const nextMoveTime = 800 + Math.random() * 700;
+    // Быстрый интервал прыжка: 0.7-1.2 секунды
+    const nextMoveTime = 700 + Math.random() * 500;
     
     moveTimeout = setTimeout(() => {
         isMoving = false;
@@ -99,10 +125,11 @@ function moveRabbit() {
 function catchRabbit(event) {
     if (event.type === 'touchstart') {
         event.preventDefault();
+        event.stopPropagation();
     }
     
     score++;
-    scoreDisplay.textContent = `How many times you catched this fuckin rabbit: ${score}`;
+    scoreDisplay.textContent = `Caught: ${score}`;
     
     // Анимация при клике
     rabbit.classList.add('rabbit-caught');
@@ -116,16 +143,20 @@ function catchRabbit(event) {
     moveRabbit();
 }
 
-// Предотвращаем контекстное меню на кролике (для мобильных)
+// Предотвращаем контекстное меню и масштабирование
 rabbit.addEventListener('contextmenu', (e) => {
     e.preventDefault();
+    return false;
 });
 
-// Запуск игры когда DOM загружен
-document.addEventListener('DOMContentLoaded', init);
+// Запуск игры
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+    // Небольшая задержка для стабильности на мобильных
+    setTimeout(init, 300);
+});
 
-// Дополнительная инициализация когда все ресурсы загружены
-window.addEventListener('load', () => {
-    // Добавляем небольшую задержку для стабильности
-    setTimeout(init, 100);
+// Дополнительная инициализация при полной загрузке
+window.addEventListener('load', function() {
+    console.log('Window loaded');
 });

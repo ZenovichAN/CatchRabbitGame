@@ -2,102 +2,114 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
 }
 
 body {
     margin: 0;
-    overflow: hidden;
     background: #a8d8a0;
     font-family: Arial, sans-serif;
-    width: 100vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     touch-action: manipulation;
+    overscroll-behavior: none;
 }
 
 #game-container {
     position: relative;
     width: 100%;
-    height: 100%;
-    flex: 1;
+    height: 100vh;
+    height: 100dvh; /* Динамическая высота viewport */
     overflow: hidden;
+    flex: 1;
 }
 
 #rabbit {
-    width: 49px;
-    height: 60px;
-    background-size: 420px 60px;
+    width: 60px;
+    height: 70px;
+    background-size: 420px 70px;
     animation: runRabbit 0.5s steps(7) infinite;
     position: absolute;
     background-image: url('../SRC/sheet.svg');
     background-repeat: no-repeat;
     image-rendering: pixelated;
     cursor: pointer;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.4s ease-in-out;
     transform: translate(-50%, -50%);
     z-index: 10;
+    pointer-events: auto;
 }
 
 #scoreDisplay {
     position: fixed;
-    top: 10px;
-    right: 10px;
-    font-size: clamp(14px, 4vw, 24px);
+    top: env(safe-area-inset-top, 10px);
+    right: max(10px, env(safe-area-inset-right));
+    font-size: clamp(16px, 4vw, 20px);
     color: white;
-    background: rgba(0, 0, 0, 0.6);
-    padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 20px);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 16px);
+    border-radius: 12px;
     z-index: 100;
     text-align: center;
-    max-width: 90%;
+    max-width: 85%;
     word-wrap: break-word;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: bold;
 }
 
 /* Адаптивные размеры для мобильных устройств */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (orientation: portrait) {
     #rabbit {
-        width: 35px;
-        height: 43px;
-        background-size: 300px 43px;
+        width: 50px;
+        height: 60px;
+        background-size: 350px 60px;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px) and (orientation: portrait) {
     #rabbit {
-        width: 28px;
-        height: 34px;
-        background-size: 240px 34px;
+        width: 40px;
+        height: 50px;
+        background-size: 280px 50px;
     }
     
     #scoreDisplay {
-        top: 5px;
-        right: 5px;
-        left: 5px;
-        font-size: 12px;
+        font-size: 14px;
         padding: 6px 10px;
+        top: max(5px, env(safe-area-inset-top));
+    }
+}
+
+/* Ландшафтная ориентация */
+@media (max-width: 900px) and (orientation: landscape) {
+    #rabbit {
+        width: 45px;
+        height: 55px;
+        background-size: 315px 55px;
+    }
+    
+    #scoreDisplay {
+        font-size: 14px;
+        padding: 5px 8px;
+        top: max(5px, env(safe-area-inset-top));
     }
 }
 
 /* Анимация бега */
 @keyframes runRabbit {
     from { background-position: 0 0; }
-    to { background-position: -364px 0; }
-}
-
-/* Портретная ориентация */
-@media (orientation: portrait) {
-    body {
-        flex-direction: column;
-    }
-}
-
-/* Ландшафтная ориентация */
-@media (orientation: landscape) {
-    body {
-        flex-direction: row;
-    }
+    to { background-position: -420px 0; }
 }
 
 /* Эффект при клике */
@@ -107,6 +119,20 @@ body {
 
 @keyframes catchEffect {
     0% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.2); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
     100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Предотвращение синего выделения на тач-устройствах */
+#rabbit:active {
+    opacity: 0.9;
+}
+
+/* Поддержка безопасных зон на iPhone */
+@supports(padding: max(0px)) {
+    #game-container {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 }
