@@ -59,11 +59,11 @@ body {
     top: max(15px, env(safe-area-inset-top, 15px));
     left: 50%;
     transform: translateX(-50%);
-    font-size: min(6vw, 28px);
+    font-size: min(4vw, 20px);
     color: white;
     background: rgba(0, 0, 0, 0.85);
-    padding: min(3vw, 15px) min(5vw, 25px);
-    border-radius: 15px;
+    padding: min(2.5vw, 12px) min(4vw, 20px);
+    border-radius: 12px;
     z-index: 100;
     text-align: center;
     white-space: nowrap;
@@ -72,7 +72,7 @@ body {
     font-weight: bold;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     width: auto;
-    min-width: 140px;
+    max-width: 90%;
 }
 
 /* Мобильные устройства - портретная ориентация */
@@ -84,10 +84,11 @@ body {
     }
     
     #scoreDisplay {
-        font-size: min(7vw, 24px);
-        padding: min(4vw, 12px) min(6vw, 20px);
-        min-width: 120px;
+        font-size: min(4.5vw, 18px);
+        padding: min(3vw, 10px) min(4vw, 16px);
         top: max(10px, env(safe-area-inset-top, 10px));
+        white-space: normal;
+        line-height: 1.2;
     }
 }
 
@@ -100,27 +101,10 @@ body {
     }
     
     #scoreDisplay {
-        font-size: min(8vw, 22px);
-        padding: min(4vw, 10px) min(6vw, 18px);
-        min-width: 110px;
+        font-size: min(5vw, 16px);
+        padding: min(3vw, 8px) min(4vw, 14px);
         top: max(8px, env(safe-area-inset-top, 8px));
-        border-radius: 12px;
-    }
-}
-
-/* Очень маленькие мобильные */
-@media (max-width: 360px) and (orientation: portrait) {
-    #rabbit {
-        width: 40px;
-        height: 50px;
-        background-size: 280px 50px;
-    }
-    
-    #scoreDisplay {
-        font-size: min(9vw, 20px);
-        padding: 8px 14px;
-        min-width: 100px;
-        top: max(5px, env(safe-area-inset-top, 5px));
+        border-radius: 10px;
     }
 }
 
@@ -133,21 +117,9 @@ body {
     }
     
     #scoreDisplay {
-        font-size: min(5vw, 20px);
-        padding: min(2vw, 10px) min(4vw, 16px);
-        min-width: 100px;
+        font-size: min(3.5vw, 16px);
+        padding: min(2vw, 8px) min(3vw, 12px);
         top: max(5px, env(safe-area-inset-top, 5px));
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-/* Очень маленькие ландшафтные */
-@media (max-width: 640px) and (orientation: landscape) {
-    #scoreDisplay {
-        font-size: min(6vw, 18px);
-        padding: 6px 12px;
-        min-width: 90px;
     }
 }
 
@@ -168,11 +140,6 @@ body {
     100% { transform: translate(-50%, -50%) scale(1); }
 }
 
-/* Предотвращение синего выделения */
-#rabbit:active {
-    opacity: 0.8;
-}
-
 /* Поддержка безопасных зон */
 @supports(padding: max(0px)) {
     body {
@@ -191,12 +158,5 @@ body {
     
     #game-container {
         height: -webkit-fill-available;
-    }
-}
-
-/* Предотвращение zoom при двойном тапе */
-@media (pointer: coarse) {
-    #rabbit {
-        touch-action: pan-x pan-y;
     }
 }
