@@ -1,43 +1,101 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     overflow: hidden;
-    background: #a8d8a0; /* Цвет травы */
+    background: #a8d8a0;
     font-family: Arial, sans-serif;
-  }
-  
-  #game-container {
-    width: 1400px;
-    height: 1400px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#game-container {
     position: relative;
-  }
-  
-  #rabbit {
-    width: 49px;       /* Ширина одного кадра */
-    height: 60px; /* Высота одного кадра */
-    background-size: 420px 60px; /* Общая ширина спрайта (60px * 7 кадров) */
-    animation: runRabbit 0.5s steps(7) infinite; 
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    overflow: hidden;
+}
+
+#rabbit {
+    width: 49px;
+    height: 60px;
+    background-size: 420px 60px;
+    animation: runRabbit 0.5s steps(7) infinite;
     position: absolute;
     background-image: url('../SRC/sheet.svg');
     background-repeat: no-repeat;
-    image-rendering: pixelated; /* Для пиксель-арта */
+    image-rendering: pixelated;
     cursor: pointer;
-  }
-  
-  #scoreDisplay {
+    transition: left 0.5s, top 0.5s;
+}
+
+#scoreDisplay {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    font-size: 24px;
+    top: 10px;
+    right: 10px;
+    font-size: clamp(14px, 4vw, 24px);
     color: white;
     background: rgba(0, 0, 0, 0.6);
-    padding: 10px 20px;
+    padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 20px);
     border-radius: 10px;
     z-index: 100;
-  }
-  
-  /* Анимация бега */
-  @keyframes runRabbit {
-    from { background-position: 0 0; }
-    to { background-position: -364px 0; } /* 60px * 7 кадров */
-  }
+    text-align: center;
+    max-width: 90%;
+    word-wrap: break-word;
+}
 
+/* Адаптивные размеры для мобильных устройств */
+@media (max-width: 768px) {
+    #rabbit {
+        width: 35px;
+        height: 43px;
+        background-size: 300px 43px;
+    }
+}
+
+@media (max-width: 480px) {
+    #rabbit {
+        width: 28px;
+        height: 34px;
+        background-size: 240px 34px;
+    }
+    
+    #scoreDisplay {
+        top: 5px;
+        right: 5px;
+        left: 5px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+/* Анимация бега */
+@keyframes runRabbit {
+    from { background-position: 0 0; }
+    to { background-position: -364px 0; }
+}
+
+/* Портретная ориентация */
+@media (orientation: portrait) {
+    body {
+        flex-direction: column;
+    }
+}
+
+/* Ландшафтная ориентация */
+@media (orientation: landscape) {
+    body {
+        flex-direction: row;
+    }
+    
+    #scoreDisplay {
+        writing-mode: horizontal-tb;
+    }
+}
