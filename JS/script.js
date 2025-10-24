@@ -42,7 +42,7 @@ function moveRabbit() {
 // Ловим кролика
 function catchRabbit() {
   score++;
-  scoreDisplay.textContent = `Daria catched rabbit: ${score}`;
+  scoreDisplay.textContent = `How many times you catched this fuckin rabbit: ${score}`;
   
   // Анимация при клике
   rabbit.style.transform = 'scale(1.1)';
