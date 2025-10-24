@@ -6,59 +6,75 @@ let rabbitX = 0;
 let rabbitY = 0;
 let isMoving = false;
 let moveTimeout = null;
-let gameRect = null;
 
 // Инициализация
 function init() {
-    console.log('Initializing game...');
+    console.log('Initializing game for mobile...');
     
-    // Получаем актуальные размеры игровой области
+    // Принудительно устанавливаем правильные размеры
+    forceMobileViewport();
+    
+    // Устанавливаем начальную позицию
     updateGameRect();
-    
-    // Устанавливаем начальную позицию в центре
     rabbitX = gameRect.width / 2;
     rabbitY = gameRect.height / 2;
     
     updateRabbitPosition();
     animateRabbit();
-    moveRabbit();
     
-    // Добавляем обработчики событий
+    // Запускаем движение после небольшой задержки
+    setTimeout(() => {
+        moveRabbit();
+    }, 500);
+    
+    // Добавляем обработчики
     rabbit.addEventListener('click', catchRabbit);
     rabbit.addEventListener('touchstart', catchRabbit, { passive: false });
     
-    // Обработка изменения размера и ориентации
+    // Обработка изменений
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleOrientationChange);
     
-    console.log('Game initialized successfully');
+    console.log('Mobile game ready');
+}
+
+// Принудительная установка viewport для мобильных
+function forceMobileViewport() {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (window.innerWidth <= 768) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    }
 }
 
 // Обновление размеров игровой области
 function updateGameRect() {
     gameRect = gameArea.getBoundingClientRect();
-    console.log('Game area:', gameRect.width, 'x', gameRect.height);
+    console.log('Game area size:', Math.round(gameRect.width), 'x', Math.round(gameRect.height));
 }
 
 // Обработка изменения ориентации
 function handleOrientationChange() {
-    console.log('Orientation changed');
+    console.log('Orientation change detected');
     // Даем время на перерисовку
     setTimeout(() => {
+        forceMobileViewport();
         handleResize();
-    }, 100);
+    }, 150);
 }
 
 // Обработка изменения размера
 function handleResize() {
-    console.log('Window resized');
-    if (moveTimeout) clearTimeout(moveTimeout);
+    console.log('Resize detected');
+    if (moveTimeout) {
+        clearTimeout(moveTimeout);
+        moveTimeout = null;
+    }
     
     updateGameRect();
     
-    // Ограничиваем позицию кролика новыми границами
-    const rabbitWidth = rabbit.offsetWidth;
-    const rabbitHeight = rabbit.offsetHeight;
+    // Корректируем позицию кролика
+    const rabbitWidth = rabbit.offsetWidth || 50;
+    const rabbitHeight = rabbit.offsetHeight || 60;
     
     const maxX = gameRect.width - rabbitWidth / 2;
     const maxY = gameRect.height - rabbitHeight / 2;
@@ -72,7 +88,7 @@ function handleResize() {
     
     // Возобновляем движение
     if (!isMoving) {
-        moveRabbit();
+        setTimeout(moveRabbit, 300);
     }
 }
 
@@ -93,17 +109,17 @@ function moveRabbit() {
     
     isMoving = true;
     
-    const rabbitWidth = rabbit.offsetWidth;
-    const rabbitHeight = rabbit.offsetHeight;
+    const rabbitWidth = rabbit.offsetWidth || 50;
+    const rabbitHeight = rabbit.offsetHeight || 60;
     
-    // Безопасная зона - 85% от видимой области
-    const safeZonePadding = 0.075;
+    // Безопасная зона - 80% от видимой области
+    const safeZonePadding = 0.1;
     const minX = rabbitWidth / 2 + gameRect.width * safeZonePadding;
     const maxX = gameRect.width - rabbitWidth / 2 - gameRect.width * safeZonePadding;
     const minY = rabbitHeight / 2 + gameRect.height * safeZonePadding;
     const maxY = gameRect.height - rabbitHeight / 2 - gameRect.height * safeZonePadding;
     
-    // Генерируем новую позицию
+    // Генерируем новую позицию в безопасной зоне
     const newX = Math.random() * (maxX - minX) + minX;
     const newY = Math.random() * (maxY - minY) + minY;
     
@@ -112,8 +128,8 @@ function moveRabbit() {
     
     updateRabbitPosition();
     
-    // Быстрый интервал прыжка: 0.7-1.2 секунды
-    const nextMoveTime = 700 + Math.random() * 500;
+    // Интервал прыжка: 0.8-1.3 секунды
+    const nextMoveTime = 800 + Math.random() * 500;
     
     moveTimeout = setTimeout(() => {
         isMoving = false;
@@ -138,12 +154,15 @@ function catchRabbit(event) {
     }, 300);
     
     // Сразу прыгает дальше
-    if (moveTimeout) clearTimeout(moveTimeout);
+    if (moveTimeout) {
+        clearTimeout(moveTimeout);
+        moveTimeout = null;
+    }
     isMoving = false;
     moveRabbit();
 }
 
-// Предотвращаем контекстное меню и масштабирование
+// Предотвращаем нежелательные действия
 rabbit.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     return false;
@@ -151,12 +170,14 @@ rabbit.addEventListener('contextmenu', (e) => {
 
 // Запуск игры
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    // Небольшая задержка для стабильности на мобильных
-    setTimeout(init, 300);
+    console.log('DOM loaded - starting mobile game');
+    // Задержка для стабильности на мобильных
+    setTimeout(init, 100);
 });
 
-// Дополнительная инициализация при полной загрузке
+// Дополнительная инициализация
 window.addEventListener('load', function() {
-    console.log('Window loaded');
+    console.log('Window fully loaded');
+    // Переинициализация для надежности
+    setTimeout(init, 200);
 });
