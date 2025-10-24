@@ -13,6 +13,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    touch-action: manipulation;
 }
 
 #game-container {
@@ -33,7 +34,9 @@ body {
     background-repeat: no-repeat;
     image-rendering: pixelated;
     cursor: pointer;
-    transition: left 0.5s, top 0.5s;
+    transition: all 0.5s ease-in-out;
+    transform: translate(-50%, -50%);
+    z-index: 10;
 }
 
 #scoreDisplay {
@@ -49,6 +52,7 @@ body {
     text-align: center;
     max-width: 90%;
     word-wrap: break-word;
+    backdrop-filter: blur(5px);
 }
 
 /* Адаптивные размеры для мобильных устройств */
@@ -94,8 +98,15 @@ body {
     body {
         flex-direction: row;
     }
-    
-    #scoreDisplay {
-        writing-mode: horizontal-tb;
-    }
+}
+
+/* Эффект при клике */
+.rabbit-caught {
+    animation: catchEffect 0.3s ease-in-out;
+}
+
+@keyframes catchEffect {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
 }
