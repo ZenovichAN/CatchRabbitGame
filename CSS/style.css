@@ -1,47 +1,197 @@
 @charset "UTF-8";
-body {
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+html {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  background: #a8d8a0; /* Цвет травы */
-  font-family: Arial, sans-serif;
+  position: fixed;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #a8d8a0;
+  font-family: "Arial", "Helvetica", sans-serif;
+  overflow: hidden;
+  position: fixed;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 #game-container {
-  width: 1400px;
-  height: 1400px;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 #rabbit {
-  width: 49px; /* Ширина одного кадра */
-  height: 60px; /* Высота одного кадра */
-  background-size: 420px 60px; /* Общая ширина спрайта (60px * 7 кадров) */
-  animation: runRabbit 0.5s steps(7) infinite;
-  position: absolute;
-  background-image: url("../SRC/sheet.svg");
-  background-repeat: no-repeat;
-  image-rendering: pixelated; /* Для пиксель-арта */
-  cursor: pointer;
+  width: 55px; /* ширина одного кадра */
+    height: 70px; /* высота одного кадра */
+    background-size: 420px 70px; /* общий размер спрайт-листа (60px * 7 кадров = 420px) */
+    animation: runRabbit 0.5s steps(7) infinite;
+    position: absolute;
+    background-image: url('../SRC/sheet.svg');
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background-position: 0 0; /* начальная позиция */
 }
 
 #scoreDisplay {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  font-size: 24px;
+  top: max(15px, env(safe-area-inset-top, 15px));
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: min(3.5vw, 18px);
   color: white;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 10px 20px;
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: min(2.5vw, 12px) min(4vw, 20px);
+  border-radius: 12px;
   z-index: 100;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(15px);
+          backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  width: auto;
+  max-width: 95%;
 }
 
+#scoreValue {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+/* Мобильные устройства - портретная ориентация */
+@media (max-width: 768px) and (orientation: portrait) {
+  #rabbit {
+    width: 50px; /* ширина одного кадра */
+        height: 60px; /* высота одного кадра */
+        background-size: 350px 60px; /* 50px * 7 кадров = 350px */
+  }
+  #scoreDisplay {
+    font-size: min(4vw, 16px);
+    padding: min(3vw, 10px) min(4vw, 16px);
+    top: max(10px, env(safe-area-inset-top, 10px));
+    white-space: normal;
+    line-height: 1.3;
+  }
+}
+/* Маленькие мобильные - портретная ориентация */
+@media (max-width: 480px) and (orientation: portrait) {
+  #rabbit {
+   width: 40px; /* ширина одного кадра */
+        height: 50px; /* высота одного кадра */
+        background-size: 280px 50px; /* 40px * 7 кадров = 280px */
+  }
+  #scoreDisplay {
+    font-size: min(4.5vw, 14px);
+    padding: min(3vw, 8px) min(4vw, 14px);
+    top: max(8px, env(safe-area-inset-top, 8px));
+  }
+}
+/* Ландшафтная ориентация для мобильных */
+@media (max-width: 900px) and (orientation: landscape) {
+  #rabbit {
+   width: 45px; /* ширина одного кадра */
+        height: 55px; /* высота одного кадра */
+        background-size: 315px 55px; /* 45px * 7 кадров = 315px */
+  }
+  #scoreDisplay {
+    font-size: min(3vw, 14px);
+    padding: min(2vw, 8px) min(3vw, 12px);
+    top: max(5px, env(safe-area-inset-top, 5px));
+  }
+}
 /* Анимация бега */
 @keyframes runRabbit {
   from {
     background-position: 0 0;
   }
   to {
-    background-position: -364px 0;
-  } /* 60px * 7 кадров */
+    background-position: -420px 0; /* сдвигаем на всю ширину спрайт-листа */
+  }
+}
+/* Эффект при клике */
+.rabbit-caught {
+  animation: catchEffect 0.3s ease-in-out;
+}
+
+@keyframes catchEffect {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+/* Поддержка безопасных зон */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+/* Фикс для iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  body {
+    height: -webkit-fill-available;
+  }
+  #game-container {
+    height: -webkit-fill-available;
+  }
+}
+/* Фикс для Android Chrome */
+@supports not (-webkit-touch-callout: none) {
+  #game-container {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+/* Для мобильных версий анимации */
+@media (max-width: 768px) and (orientation: portrait) {
+    @keyframes runRabbit {
+        from { background-position: 0 0; }
+        to { background-position: -350px 0; }
+    }
+}
+
+@media (max-width: 480px) and (orientation: portrait) {
+    @keyframes runRabbit {
+        from { background-position: 0 0; }
+        to { background-position: -280px 0; }
+    }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+    @keyframes runRabbit {
+        from { background-position: 0 0; }
+        to { background-position: -315px 0; }
+    }
 }

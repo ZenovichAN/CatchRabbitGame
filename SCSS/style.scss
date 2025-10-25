@@ -164,3 +164,11 @@ body {
         height: -webkit-fill-available;
     }
 }
+
+/* Фикс для Android Chrome */
+@supports not (-webkit-touch-callout: none) {
+    #game-container {
+        height: 100vh;
+        height: 100dvh;
+    }
+}
