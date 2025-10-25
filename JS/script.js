@@ -166,7 +166,7 @@ function moveRabbit() {
     updateRabbitPosition();
     
     // УСКОРИЛ ПРЫЖКИ: 400-700 мс вместо 700-1200
-    const nextMoveTime = 600 + Math.random() * 300;
+    const nextMoveTime = 500 + Math.random() * 300;
     
     moveTimeout = setTimeout(() => {
         isMoving = false;
