@@ -8,10 +8,46 @@ let rabbitY = 0;
 let isMoving = false;
 let moveTimeout = null;
 
+// Создаем элемент для сообщения
+const messageElement = document.createElement('div');
+messageElement.style.cssText = `
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-size: min(4vw, 18px);
+    text-align: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    max-width: 90%;
+    word-wrap: break-word;
+    line-height: 1.4;
+`;
+document.body.appendChild(messageElement);
+
 // Установка переменной высоты для мобильных
 function setVhVariable() {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Функция показа сообщения
+function showMessage() {
+    messageElement.textContent = "Australia thanks for your assistance, all rabbits are fed and sent home";
+    messageElement.style.opacity = '1';
+    
+    // Сообщение исчезает через 3 секунды (время прочтения)
+    setTimeout(() => {
+        messageElement.style.opacity = '0';
+    }, 3000);
 }
 
 // Инициализация
@@ -37,7 +73,7 @@ function init() {
     // Запускаем движение сразу
     setTimeout(() => {
         moveRabbit();
-    }, 500);
+    }, 300); // уменьшил задержку старта
     
     // Добавляем обработчики
     rabbit.addEventListener('click', catchRabbit);
@@ -79,7 +115,7 @@ function handleOrientationChange() {
         rabbitX = gameRect.width / 2;
         rabbitY = gameRect.height / 2;
         updateRabbitPosition();
-    }, 500);
+    }, 300); // уменьшил задержку
 }
 
 // Обработка изменения размера
@@ -110,7 +146,7 @@ function handleResize() {
     updateRabbitPosition();
     
     if (!isMoving) {
-        setTimeout(moveRabbit, 300);
+        setTimeout(moveRabbit, 200); // уменьшил задержку
     }
 }
 
@@ -122,10 +158,10 @@ function updateRabbitPosition() {
 
 // Анимация спрайта
 function animateRabbit() {
-    rabbit.style.animation = 'runRabbit 0.7s steps(7) infinite';
+    rabbit.style.animation = 'runRabbit 0.5s steps(7) infinite'; // ускорил анимацию
 }
 
-// Прыжок кролика
+// Прыжок кролика - УСКОРЕНО
 function moveRabbit() {
     if (isMoving) return;
     
@@ -149,7 +185,8 @@ function moveRabbit() {
     
     updateRabbitPosition();
     
-    const nextMoveTime = 700 + Math.random() * 500;
+    // УСКОРИЛ ПРЫЖКИ: 400-700 мс вместо 700-1200
+    const nextMoveTime = 400 + Math.random() * 300;
     
     moveTimeout = setTimeout(() => {
         isMoving = false;
@@ -167,10 +204,15 @@ function catchRabbit(event) {
     score++;
     scoreValue.textContent = score;
     
+    // Проверяем каждые 20 пойманных кроликов
+    if (score % 20 === 0) {
+        showMessage();
+    }
+    
     rabbit.classList.add('rabbit-caught');
     setTimeout(() => {
         rabbit.classList.remove('rabbit-caught');
-    }, 300);
+    }, 200); // ускорил анимацию
     
     if (moveTimeout) {
         clearTimeout(moveTimeout);
@@ -190,7 +232,7 @@ rabbit.addEventListener('contextmenu', (e) => {
 // Запуск игры
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 DOM loaded - starting game');
-    setTimeout(init, 500);
+    setTimeout(init, 300); // уменьшил задержку
 });
 
 window.addEventListener('load', function() {

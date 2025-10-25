@@ -41,19 +41,20 @@ body {
 }
 
 #rabbit {
-  width: 55px; /* ширина одного кадра */
-    height: 70px; /* высота одного кадра */
-    background-size: 420px 70px; /* общий размер спрайт-листа (60px * 7 кадров = 420px) */
-    animation: runRabbit 0.5s steps(7) infinite;
-    position: absolute;
-    background-image: url('../SRC/sheet.svg');
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
-    cursor: pointer;
-    transition: all 0.4s ease-in-out;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    background-position: 0 0; /* начальная позиция */
+  width: 60px;
+  height: 70px;
+  background-size: 420px 70px;
+  animation: runRabbit 0.5s steps(7) infinite;
+  position: absolute;
+  background-image: url("../SRC/sheet.svg");
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  overflow: hidden;
+  background-position: 0 0;
 }
 
 #scoreDisplay {
@@ -86,9 +87,9 @@ body {
 /* Мобильные устройства - портретная ориентация */
 @media (max-width: 768px) and (orientation: portrait) {
   #rabbit {
-    width: 50px; /* ширина одного кадра */
-        height: 60px; /* высота одного кадра */
-        background-size: 350px 60px; /* 50px * 7 кадров = 350px */
+    width: 50px;
+    height: 60px;
+    background-size: 350px 60px;
   }
   #scoreDisplay {
     font-size: min(4vw, 16px);
@@ -101,9 +102,9 @@ body {
 /* Маленькие мобильные - портретная ориентация */
 @media (max-width: 480px) and (orientation: portrait) {
   #rabbit {
-   width: 40px; /* ширина одного кадра */
-        height: 50px; /* высота одного кадра */
-        background-size: 280px 50px; /* 40px * 7 кадров = 280px */
+    width: 45px;
+    height: 55px;
+    background-size: 315px 55px;
   }
   #scoreDisplay {
     font-size: min(4.5vw, 14px);
@@ -114,9 +115,9 @@ body {
 /* Ландшафтная ориентация для мобильных */
 @media (max-width: 900px) and (orientation: landscape) {
   #rabbit {
-   width: 45px; /* ширина одного кадра */
-        height: 55px; /* высота одного кадра */
-        background-size: 315px 55px; /* 45px * 7 кадров = 315px */
+    width: 40px;
+    height: 50px;
+    background-size: 280px 50px;
   }
   #scoreDisplay {
     font-size: min(3vw, 14px);
@@ -130,12 +131,43 @@ body {
     background-position: 0 0;
   }
   to {
-    background-position: -420px 0; /* сдвигаем на всю ширину спрайт-листа */
+    background-position: -420px 0;
+  }
+}
+/* Анимация для мобильных версий */
+@media (max-width: 768px) and (orientation: portrait) {
+  @keyframes runRabbit {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -350px 0;
+    }
+  }
+}
+@media (max-width: 480px) and (orientation: portrait) {
+  @keyframes runRabbit {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -315px 0;
+    }
+  }
+}
+@media (max-width: 900px) and (orientation: landscape) {
+  @keyframes runRabbit {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -280px 0;
+    }
   }
 }
 /* Эффект при клике */
 .rabbit-caught {
-  animation: catchEffect 0.3s ease-in-out;
+  animation: catchEffect 0.2s ease-in-out;
 }
 
 @keyframes catchEffect {
@@ -174,24 +206,51 @@ body {
     height: 100dvh;
   }
 }
-/* Для мобильных версий анимации */
-@media (max-width: 768px) and (orientation: portrait) {
-    @keyframes runRabbit {
-        from { background-position: 0 0; }
-        to { background-position: -350px 0; }
-    }
+/* Стили для сообщения (добавляются через JavaScript) */
+.australia-message {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  font-size: min(4vw, 18px);
+  text-align: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  max-width: 90%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  font-weight: bold;
 }
 
-@media (max-width: 480px) and (orientation: portrait) {
-    @keyframes runRabbit {
-        from { background-position: 0 0; }
-        to { background-position: -280px 0; }
-    }
+/* Адаптивность сообщения для маленьких экранов */
+@media (max-width: 480px) {
+  .australia-message {
+    padding: 15px 20px;
+    font-size: min(4.5vw, 16px);
+    bottom: 30px;
+  }
 }
-
+@media (max-width: 360px) {
+  .australia-message {
+    padding: 12px 16px;
+    font-size: min(5vw, 14px);
+    bottom: 20px;
+  }
+}
+/* Ландшафтная ориентация для сообщения */
 @media (max-width: 900px) and (orientation: landscape) {
-    @keyframes runRabbit {
-        from { background-position: 0 0; }
-        to { background-position: -315px 0; }
-    }
+  .australia-message {
+    padding: 12px 20px;
+    font-size: min(3.5vw, 16px);
+    bottom: 20px;
+  }
 }
